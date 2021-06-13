@@ -1,0 +1,5 @@
+streamlit
+noisereduce
+numpy
+librosa
+plotly
