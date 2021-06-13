@@ -14,7 +14,7 @@ def trim_audio(data, rate, start_sec=None, end_sec=None):
         return data[:, start:end]
     
 title = 'Audio noise reduction'
-st.set_page_config(page_title=title, page_icon=":sound:")
+st.set_page_config(page_title=title, page_icon=":sound:", layout='wide')
 st.title(title)
 
 uploaded_file = st.file_uploader("Upload your audio file (.wav)") 
