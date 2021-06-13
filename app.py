@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as stc
 import noisereduce as nr
 import librosa
+import soundfile as sf
 import numpy as np
 import plotly.graph_objects as go
 
@@ -41,7 +42,7 @@ fig.update_yaxes(visible=False, ticklabelposition='inside', tickwidth=0)
 st.plotly_chart(fig, use_container_with=True)
 
 st.text('Noise audio')
-librosa.output.write_wav('noise_clip.wav', trim_audio(wav, sr, noise_part_ranges[0], noise_part_ranges[1]), sr)
+sf.write('noise_clip.wav', trim_audio(wav, sr, noise_part_ranges[0], noise_part_ranges[1]), sr)
 noise_wav, sr = librosa.load('noise_clip.wav', sr=None)
 st.audio('noise_clip.wav')
 
@@ -50,7 +51,7 @@ if st.button('Denoise the audio!'):
         nr_wav = nr.reduce_noise(audio_clip=wav, noise_clip=noise_wav, prop_decrease=1.0)
 
         st.subheader('Denoised audio')
-        librosa.output.write_wav('nr_clip.wav', nr_wav, sr)
+        sf.write('nr_clip.wav', nr_wav, sr)
     st.success('Done!')
     st.text('Denoised audio')
     st.audio('nr_clip.wav')

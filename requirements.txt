@@ -2,4 +2,5 @@ streamlit==0.79.0
 noisereduce
 numpy
 librosa
+soundfile
 plotly
