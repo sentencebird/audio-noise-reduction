@@ -5,13 +5,16 @@ import librosa
 import soundfile as sf
 import numpy as np
 import plotly.graph_objects as go
+import pickle
 
 from pyannote.audio.utils.signal import Binarize
 import torch
 
 @st.cache
 def speech_activity_detection_model():
-    sad = torch.hub.load('pyannote-audio', 'sad_ami', source='local', device='cpu', batch_size=128)
+    # sad = torch.hub.load('pyannote-audio', 'sad_ami', source='local', device='cpu', batch_size=128)
+    with open('speech_activity_detection_model.pkl', 'rb') as f:
+        sad = pickle.load(f)
     return sad
 
 def trim_noise_part_from_speech(sad, fname):
