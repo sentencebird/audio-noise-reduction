@@ -11,8 +11,7 @@ import torch
 
 @st.cache
 def speech_activity_detection_model():
-    sad = torch.hub.load('pyannote/pyannote-audio', 'sad_ami')
-    sad = torch.hub.load('pyannote/pyannote-audio', 'sad_ami', device='cpu', batch_size=128)
+    sad = torch.hub.load('pyannote-audio', 'sad_ami', source='local', device='cpu', batch_size=128)
     return sad
 
 def trim_noise_part_from_speech(sad, fname):
