@@ -17,13 +17,13 @@ def speech_activity_detection_model():
         sad = pickle.load(f)
     return sad
 
-def trim_noise_part_from_speech(sad, fname):
+@st.cache
+def trim_noise_part_from_speech(sad, fname, speech_wav, sr):
     file_obj = {"uri": "filename", "audio": fname}
     sad_scores = sad(file_obj)
     binarize = Binarize(offset=0.52, onset=0.52, log_scale=True, min_duration_off=0.1, min_duration_on=0.1)
     speech = binarize.apply(sad_scores, dimension=1)
     
-    speech_wav, sr = librosa.load(fname, sr=None, mono=False)
     noise_wav = np.zeros((speech_wav.shape[0], 0))
     append_axis = 1 if speech_wav.ndim == 2 else 0
     noise_ranges = []
@@ -35,6 +35,7 @@ def trim_noise_part_from_speech(sad, fname):
         noise_start = next_noise_start
     return noise_wav.T, noise_ranges
 
+@st.cache
 def trim_audio(data, rate, start_sec=None, end_sec=None):
     start, end = int(start_sec * rate), int(end_sec * rate)
     if data.ndim == 1: # mono
@@ -68,7 +69,7 @@ if noise_part_detection_method == "Manually": # ノイズ区間は1箇所
 elif noise_part_detection_method == "Automatically (using speech activity detections)": # ノイズ区間が複数
     with st.spinner('Please wait for Detecting the speech activities'):
         sad = speech_activity_detection_model()
-        noise_wav, noise_part_ranges = trim_noise_part_from_speech(sad, uploaded_file)
+        noise_wav, noise_part_ranges = trim_noise_part_from_speech(sad, uploaded_file, wav, sr)
    
 fig = go.Figure()
 x_wav = np.arange(len(wav)) / sr
